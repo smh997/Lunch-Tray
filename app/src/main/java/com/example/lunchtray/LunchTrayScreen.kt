@@ -17,19 +17,23 @@ package com.example.lunchtray
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -63,7 +67,7 @@ fun LunchTrayAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { Text(text = stringResource(id = currentScreen.title)) },
         modifier = modifier,
         navigationIcon = {
@@ -110,7 +114,7 @@ fun LunchTrayApp() {
         NavHost(
             navController = navController,
             startDestination = LunchTrayScreen.Start.name,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
         ){
             composable(LunchTrayScreen.Start.name){
                 StartOrderScreen(
@@ -118,8 +122,8 @@ fun LunchTrayApp() {
                         navController.navigate(LunchTrayScreen.EntreeMenu.name)
                     },
                     modifier = Modifier
-                        .fillMaxHeight()
-//                        .padding(dimensionResource(id = R.dimen.padding_small))
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 )
             }
             composable(LunchTrayScreen.EntreeMenu.name){
@@ -136,6 +140,8 @@ fun LunchTrayApp() {
                     },
                     modifier = Modifier
                         .fillMaxHeight()
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
                 )
             }
             composable(LunchTrayScreen.SideDishMenu.name){
@@ -152,6 +158,8 @@ fun LunchTrayApp() {
                     },
                     modifier = Modifier
                         .fillMaxHeight()
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
                 )
             }
             composable(LunchTrayScreen.AccompanimentMenu.name){
@@ -161,13 +169,15 @@ fun LunchTrayApp() {
                         cancelOrderAndNavigateToStart(viewModel, navController)
                     },
                     onNextButtonClicked = {
-                        navController.navigate(LunchTrayScreen.AccompanimentMenu.name)
+                        navController.navigate(LunchTrayScreen.Checkout.name)
                     },
                     onSelectionChanged = {
                         viewModel.updateAccompaniment(it)
                     },
                     modifier = Modifier
                         .fillMaxHeight()
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
                 )
             }
             composable(LunchTrayScreen.Checkout.name){
@@ -181,6 +191,14 @@ fun LunchTrayApp() {
                     },
                     modifier = Modifier
                         .fillMaxHeight()
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            bottom = innerPadding.calculateBottomPadding(),
+                            start = dimensionResource(R.dimen.padding_medium),
+                            end = dimensionResource(R.dimen.padding_medium),
+                        )
+                        .verticalScroll(rememberScrollState())
+
                 )
             }
         }
